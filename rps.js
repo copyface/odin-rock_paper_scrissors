@@ -1,8 +1,11 @@
 // variables
-let humanScore = 0;
-let computerScore = 0;
 let playerChoice = null;
+let playerScore = 0;
+let computerScore = 0;
 
+const playerScoreText = document.querySelector("#player-score");
+const computerScoreText = document.querySelector("#computer-score");
+const computerChoiceText = document.querySelector("#computer-choice");
 const choices = ["rock", "paper", "scissors"];
 const options = document.querySelector(".card");
 const menuButton = document.querySelector("#menu__button");
@@ -20,7 +23,8 @@ function playRound(humanChoice, computerChoice) {
     (humanChoice === "paper" && computerChoice === "rock") ||
     (humanChoice === "scissors" && computerChoice === "paper")
   ) {
-    humanScore++;
+    playerScore++;
+    playerScoreText.textContent = playerScore;
     console.log(
       "human: " + humanChoice + " vs " + "computer: " + computerChoice,
     );
@@ -34,6 +38,7 @@ function playRound(humanChoice, computerChoice) {
     return;
   } else {
     computerScore++;
+    computerScoreText.textContent = computerScore;
     console.log(
       "human: " + humanChoice + " vs " + "computer: " + computerChoice,
     );
@@ -41,8 +46,6 @@ function playRound(humanChoice, computerChoice) {
     return;
   }
 }
-
-// player choice
 options.addEventListener("click", (event) => {
   const choice = event.target;
 
@@ -60,20 +63,24 @@ options.addEventListener("click", (event) => {
 
   if (playerChoice) {
     console.log("Player selected: " + playerChoice);
+    playGame();
   }
 });
 
 // play the game
 function playGame() {
+  const display = document.createElement("h3");
+
   let computerChoice = getComputerChoice();
-  playRound();
+  playRound(playerChoice, computerChoice);
+  computerChoiceText.textContent = computerChoice;
+  playerChoice = null;
 }
 
 // remove screen
 function mainMenu() {
   const menu = document.querySelector("#menu");
   menu.remove();
-  playGame();
 }
 
 menuButton.addEventListener("click", mainMenu);
