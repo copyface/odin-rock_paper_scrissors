@@ -2,6 +2,7 @@
 let playerChoice = null;
 let playerScore = 0;
 let computerScore = 0;
+let log = null;
 
 const playerScoreText = document.querySelector("#player-score");
 const computerScoreText = document.querySelector("#computer-score");
@@ -9,6 +10,7 @@ const computerChoiceText = document.querySelector("#computer-choice");
 const choices = ["rock", "paper", "scissors"];
 const options = document.querySelector(".card");
 const menuButton = document.querySelector("#menu__button");
+const container = document.querySelector(".container");
 
 // get the computers choice
 function getComputerChoice() {
@@ -25,24 +27,19 @@ function playRound(humanChoice, computerChoice) {
   ) {
     playerScore++;
     playerScoreText.textContent = playerScore;
-    console.log(
-      "human: " + humanChoice + " vs " + "computer: " + computerChoice,
-    );
-    console.log("You Won! " + humanChoice + " beats " + computerChoice + ".");
+    const status = "You Won! " + humanChoice + " beats " + computerChoice + ".";
+    log = status;
     return;
   } else if (humanChoice === computerChoice) {
-    console.log(
-      "human: " + humanChoice + " vs " + "computer: " + computerChoice,
-    );
-    console.log("Draw! both chose " + humanChoice + ".");
+    const status = "Draw! both chose " + humanChoice + ".";
+    log = status;
     return;
   } else {
     computerScore++;
     computerScoreText.textContent = computerScore;
-    console.log(
-      "human: " + humanChoice + " vs " + "computer: " + computerChoice,
-    );
-    console.log("You Lose! " + computerChoice + " beats " + humanChoice + ".");
+    const status =
+      "You Lose! " + computerChoice + " beats " + humanChoice + ".";
+    log = status;
     return;
   }
 }
@@ -63,16 +60,48 @@ options.addEventListener("click", (event) => {
 
   if (playerChoice) {
     console.log("Player selected: " + playerChoice);
+    choice.setAttribute("style", "background-color: green;");
     playGame();
   }
 });
 
 // play the game
 function playGame() {
-  const display = document.createElement("h3");
+  const display = document.createElement("div");
+  const text = document.createElement("h3");
+  const nextButton = document.createElement("button");
+  const disableButton = options.querySelectorAll("button");
+
+  disableButton.forEach((button) => {
+    button.disabled = true;
+  });
+
+  display.setAttribute(
+    "style",
+    "display: flex; justify-content: center; align-items: center; margin-top: 20px; gap: 20px;",
+  );
+  nextButton.setAttribute(
+    "style",
+    "padding: 10px 20px; border: 2px solid black; border-radius: 5px;",
+  );
+  nextButton.textContent = "Next";
+
+  nextButton.addEventListener("click", () => {
+    disableButton.forEach((button) => {
+      button.disabled = false;
+      button.setAttribute("style", "background-color: none;");
+    });
+    computerChoiceText.textContent = "...";
+    container.removeChild(display);
+  });
+
+  display.appendChild(text);
+  display.appendChild(nextButton);
 
   let computerChoice = getComputerChoice();
   playRound(playerChoice, computerChoice);
+  text.textContent = log;
+  container.appendChild(display);
   computerChoiceText.textContent = computerChoice;
   playerChoice = null;
 }
