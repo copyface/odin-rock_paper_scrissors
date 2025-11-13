@@ -1,7 +1,11 @@
-// score variables
+// variables
 let humanScore = 0;
 let computerScore = 0;
+let playerChoice = null;
+
 const choices = ["rock", "paper", "scissors"];
+const options = document.querySelector(".card");
+const menuButton = document.querySelector("#menu__button");
 
 // get the computers choice
 function getComputerChoice() {
@@ -38,8 +42,7 @@ function playRound(humanChoice, computerChoice) {
   }
 }
 
-let playerChoice = null;
-const options = document.querySelector(".card");
+// player choice
 options.addEventListener("click", (event) => {
   const choice = event.target;
 
@@ -62,15 +65,15 @@ options.addEventListener("click", (event) => {
 
 // play the game
 function playGame() {
-  // const random = Math.floor(Math.random() * choices.length);
+  let computerChoice = getComputerChoice();
+  playRound();
 }
 
-const menuButton = document.querySelector("#menu__button");
-
+// remove screen
 function mainMenu() {
   const menu = document.querySelector("#menu");
   menu.remove();
-  setTimeout(() => playGame(), 3000);
+  playGame();
 }
 
 menuButton.addEventListener("click", mainMenu);
