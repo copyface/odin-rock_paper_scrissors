@@ -3,14 +3,29 @@ let playerChoice = null;
 let playerScore = 0;
 let computerScore = 0;
 let log = null;
+let rounds = 5;
+let winner = "";
+let playerScoreText = document.querySelector("#player-score");
+let computerScoreText = document.querySelector("#computer-score");
+let computerChoiceText = document.querySelector("#computer-choice");
 
-const playerScoreText = document.querySelector("#player-score");
-const computerScoreText = document.querySelector("#computer-score");
-const computerChoiceText = document.querySelector("#computer-choice");
 const choices = ["rock", "paper", "scissors"];
 const options = document.querySelector(".card");
 const menuButton = document.querySelector("#menu__button");
 const container = document.querySelector(".container");
+const display = document.createElement("div");
+const text = document.createElement("h3");
+const nextButton = document.createElement("button");
+const winnerText = document.createElement("h3");
+
+display.setAttribute(
+  "style",
+  "display: flex; justify-content: center; align-items: center; margin-top: 20px; gap: 20px;",
+);
+nextButton.setAttribute(
+  "style",
+  "padding: 10px 20px; border: 2px solid black; border-radius: 5px;",
+);
 
 // get the computers choice
 function getComputerChoice() {
@@ -61,49 +76,70 @@ options.addEventListener("click", (event) => {
   if (playerChoice) {
     console.log("Player selected: " + playerChoice);
     choice.setAttribute("style", "background-color: green;");
-    playGame();
   }
+  text.textContent = null;
+  playGame();
+});
+
+// button status
+function buttonStatus(status) {
+  const disableButton = options.querySelectorAll("button");
+  disableButton.forEach((button) => {
+    button.disabled = status;
+    if (status === false) {
+      button.setAttribute("style", "background-color: none;");
+    }
+  });
+}
+
+function gameWinner() {
+  if (playerScore > computerScore) {
+    winner = "Player Wins!";
+  } else if (computerScore > playerScore) {
+    winner = "Computer Wins!";
+  } else {
+    winner = "Draw!";
+  }
+  computerScore = 0;
+  playerScore = 0;
+}
+
+nextButton.addEventListener("click", () => {
+  if (nextButton.textContent === "Restart") {
+    computerScoreText.textContent = computerScore;
+    playerScoreText.textContent = playerScore;
+    display.removeChild(winnerText);
+  }
+  buttonStatus(false);
+  computerChoiceText.textContent = "...";
+  container.removeChild(display);
 });
 
 // play the game
 function playGame() {
-  const display = document.createElement("div");
-  const text = document.createElement("h3");
-  const nextButton = document.createElement("button");
-  const disableButton = options.querySelectorAll("button");
-
-  disableButton.forEach((button) => {
-    button.disabled = true;
-  });
-
-  display.setAttribute(
-    "style",
-    "display: flex; justify-content: center; align-items: center; margin-top: 20px; gap: 20px;",
-  );
-  nextButton.setAttribute(
-    "style",
-    "padding: 10px 20px; border: 2px solid black; border-radius: 5px;",
-  );
-  nextButton.textContent = "Next";
-
-  nextButton.addEventListener("click", () => {
-    disableButton.forEach((button) => {
-      button.disabled = false;
-      button.setAttribute("style", "background-color: none;");
-    });
-    computerChoiceText.textContent = "...";
-    container.removeChild(display);
-  });
-
-  display.appendChild(text);
-  display.appendChild(nextButton);
-
   let computerChoice = getComputerChoice();
   playRound(playerChoice, computerChoice);
+  computerChoiceText.textContent = computerChoice;
+
+  buttonStatus(true);
+  display.appendChild(nextButton);
+
+  if (rounds === 1) {
+    nextButton.textContent = "Restart";
+    gameWinner();
+    winnerText.textContent = winner;
+    display.insertBefore(winnerText, nextButton);
+    container.appendChild(display);
+    rounds = 5;
+    return;
+  }
+
+  nextButton.textContent = "Next";
+  display.insertBefore(text, nextButton);
   text.textContent = log;
   container.appendChild(display);
-  computerChoiceText.textContent = computerChoice;
-  playerChoice = null;
+  console.log(rounds);
+  rounds--;
 }
 
 // remove screen
