@@ -59,7 +59,10 @@ function playRound(humanChoice, computerChoice) {
   }
 }
 options.addEventListener("click", (event) => {
-  const choice = event.target;
+  const choice = event.target.closest(".card__button");
+  if (!choice) {
+    return;
+  }
 
   switch (true) {
     case choice.className.includes("card__button--rock"):
